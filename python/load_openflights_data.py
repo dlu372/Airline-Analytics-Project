@@ -54,6 +54,11 @@ routes.to_csv("data/processed/routes_clean.csv", index=False)
 
 ##### STAGE 02 #####
 
+# Make join keys consistent types (recommended: string)
+airports["airport_id"] = airports["airport_id"].astype("string")
+routes["source_airport_id"] = routes["source_airport_id"].astype("string")
+routes["destination_airport_id"] = routes["destination_airport_id"].astype("string")
+
 # Prepare airport lookup tables for joins
 airports_src = airports[[
     "airport_id", "name", "city", "country",
@@ -100,3 +105,6 @@ routes_enriched.to_csv(
     "data/processed/routes_enriched.csv",
     index=False
 )
+
+print("Saved: data/processed/routes_enriched.csv")
+print("routes_enriched shape:", routes_enriched.shape)
