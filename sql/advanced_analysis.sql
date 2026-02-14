@@ -173,7 +173,6 @@ JOIN v_airline_total_routes a
 ORDER BY top10_share_pct DESC;
 
 --HHI (Herfindahl-Hirschman Index) is a commonly used measure of market concentration.
--- 1) share
 WITH route_share AS (
   SELECT
     f.airline,
@@ -183,8 +182,6 @@ WITH route_share AS (
   JOIN v_airline_total_routes t
     ON f.airline = t.airline
 ),
-
--- 2) HHI: sum(share^2)
 hhi AS (
   SELECT
     airline,
@@ -192,8 +189,6 @@ hhi AS (
   FROM route_share
   GROUP BY airline
 ),
-
--- 3) top10 share
 ranked_routes AS (
   SELECT
     r.airline,
@@ -211,20 +206,39 @@ top10 AS (
   FROM ranked_routes
   WHERE rn <= 10
   GROUP BY airline
+),
+
+-- First, spell the final fields to be displayed as "base"
+base AS (
+  SELECT
+    a.airline,
+    a.total_route_count,
+    ROUND(100.0 * top10.top10_route_count / a.total_route_count, 1) AS top10_share_pct,
+    hhi.hhi
+  FROM v_airline_total_routes a
+  JOIN top10 ON top10.airline = a.airline
+  JOIN hhi  ON hhi.airline  = a.airline
+  WHERE a.total_route_count >= 200
+),
+
+-- Calculate the quantile (0 to 1) of each airline in the overall population
+ranked AS (
+  SELECT
+    *,
+    PERCENT_RANK() OVER (ORDER BY hhi) AS pr
+  FROM base
 )
 
+-- The final output: CASE no longer uses a fixed threshold but pr
 SELECT
-  a.airline,
-  a.total_route_count,
-  ROUND(100.0 * top10.top10_route_count / a.total_route_count, 1) AS top10_share_pct,
-  hhi.hhi,
+  airline,
+  total_route_count,
+  top10_share_pct,
+  hhi,
   CASE
-    WHEN hhi.hhi >= 0.050 THEN 'Highly concentrated'
-    WHEN hhi.hhi >= 0.020 THEN 'Moderately concentrated'
-    ELSE 'Distributed'
+    WHEN pr >= 0.80 THEN 'Highly concentrated'        -- top 20%
+    WHEN pr >= 0.50 THEN 'Moderately concentrated'    -- 50%~80%
+    ELSE 'Distributed'                                -- bottom 50%
   END AS concentration_label
-FROM v_airline_total_routes a
-JOIN top10 ON top10.airline = a.airline
-JOIN hhi  ON hhi.airline  = a.airline
-WHERE a.total_route_count >= 200
-ORDER BY hhi.hhi DESC;
+FROM ranked
+ORDER BY hhi DESC;
