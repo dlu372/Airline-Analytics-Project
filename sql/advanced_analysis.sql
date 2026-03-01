@@ -172,7 +172,7 @@ JOIN v_airline_total_routes a
   ON t.airline = a.airline
 ORDER BY top10_share_pct DESC;
 
---HHI (Herfindahl-Hirschman Index) is a commonly used measure of market concentration.
+--HHI
 WITH route_share AS (
   SELECT
     f.airline,
@@ -208,7 +208,7 @@ top10 AS (
   GROUP BY airline
 ),
 
--- First, spell the final fields to be displayed as "base"
+-- New addition: First, spell the final fields to be displayed as "base"
 base AS (
   SELECT
     a.airline,
@@ -221,7 +221,7 @@ base AS (
   WHERE a.total_route_count >= 200
 ),
 
--- Calculate the quantile (0 to 1) of each airline in the overall population
+-- New addition: Calculate the quantile (0 to 1) of each airline in the overall population
 ranked AS (
   SELECT
     *,
