@@ -277,7 +277,16 @@ Export the final airline-level result (from the “HHI + Top10 + segmentation”
 
 ---
 
-## Author
+---
 
-Di Lu — BCom (Information Systems & Business Analytics), University of Auckland  
-Portfolio project showcasing end-to-end analytics capability (Python → SQL → BI).
+## 👨‍💻 Author
+
+**Di Lu**  
+BCom (Information Systems & Business Analytics), University of Auckland  
+
+### 📫 Connect with Me
+
+- 🔗 LinkedIn: https://www.linkedin.com/in/di-lu-3572912b5  
+- 💻 GitHub: https://github.com/dlu372  
+
+---
