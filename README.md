@@ -149,7 +149,7 @@ A standard concentration metric adapted here to route portfolios:
 
 ---
 
-## Project structure (matches your repo naming)
+## Project structure
 ```text
 Airline-Analytics-Project/
 ├── data/
@@ -174,76 +174,89 @@ Airline-Analytics-Project/
 
 ⸻
 
-How to reproduce (end-to-end)
+# How to reproduce (end-to-end)
 
-1) Install dependencies
+## 1) Install dependencies
 
+```bash
 python -m venv .venv
 source .venv/bin/activate   # macOS/Linux
 pip install pandas
+```
 
-2) Place raw data
+## 2) Place raw data
 
 Download OpenFlights .dat files and put them here:
-	•	data/raw/airports.dat
-	•	data/raw/airlines.dat
-	•	data/raw/routes.dat
+
+- data/raw/airports.dat
+- data/raw/airlines.dat
+- data/raw/routes.dat
 
 Note: In your current script, the input paths are absolute (e.g., /Users/.../Downloads/...).
 For portability, you can change them to relative paths like data/raw/airports.dat.
 
-3) Run Python enrichment
+## 3) Run Python enrichment
 
+```bash
 python Python/load_openflights_data.py
+```
 
 Outputs will be written to:
-	•	data/processed/routes_enriched.csv (plus cleaned dimension files)
 
-4) Load into SQLite (DB Browser for SQLite)
-	•	Create/open a database (e.g., enriched.db)
-	•	Import data/processed/routes_enriched.csv as table: routes_enriched
+- data/processed/routes_enriched.csv (plus cleaned dimension files)
 
-5) Run SQL scripts
+## 4) Load into SQLite (DB Browser for SQLite)
+
+- Create/open a database (e.g., enriched.db)
+- Import data/processed/routes_enriched.csv as table: routes_enriched
+
+## 5) Run SQL scripts
 
 Execute:
-	•	sql/basic_analysis.sql
-	•	sql/advanced_analysis.sql
 
-6) Export for Power BI
+- sql/basic_analysis.sql
+- sql/advanced_analysis.sql
+
+## 6) Export for Power BI
 
 Export the final airline-level result (from the “HHI + Top10 + segmentation” query) as:
-	•	data/processed/airline_network_concentration.csv
 
-7) Power BI
-	•	Load data/processed/airline_network_concentration.csv
-	•	Build:
-	•	Table visual (airline metrics)
-	•	Bar chart (airline count by label)
-	•	Scatter chart (Top10 vs HHI) with size + label legend + slicer
+- data/processed/airline_network_concentration.csv
 
-⸻
+## 7) Power BI
 
-🛠 Tech stack & skills demonstrated
-	•	Python (pandas): cleaning, schema alignment, missing value handling, enrichment joins, export pipeline
-	•	SQL (SQLite): views, CTEs, window functions, ranking, metric engineering (TopN share, HHI), segmentation
-	•	Power BI: interactive visuals (slicer), scatter storytelling, dashboard-style presentation
-	•	Git/GitHub: iterative development, reproducible artifact organization
+- Load data/processed/airline_network_concentration.csv
+- Build:
+  - Table visual (airline metrics)
+  - Bar chart (airline count by label)
+  - Scatter chart (Top10 vs HHI) with size + label legend + slicer
 
-⸻
+---
 
-Limitations & next steps
+## 🛠 Tech stack & skills demonstrated
 
-Limitations:
-	•	No revenue / passenger / fare / cost data in OpenFlights → no direct profitability modeling in this version.
+- Python (pandas): cleaning, schema alignment, missing value handling, enrichment joins, export pipeline
+- SQL (SQLite): views, CTEs, window functions, ranking, metric engineering (TopN share, HHI), segmentation
+- Power BI: interactive visuals (slicer), scatter storytelling, dashboard-style presentation
+- Git/GitHub: iterative development, reproducible artifact organization
 
-Next steps (planned):
-	•	add route distance / regional bucketing
-	•	enhance segmentation (percentile thresholds documented + sensitivity checks)
-	•	incorporate external commercial/operational datasets for profitability and seasonality extensions
+---
 
-⸻
+## Limitations & next steps
 
-Author
+### Limitations:
 
-Di Lu — BCom (Information Systems & Business Analytics), University of Auckland
+- No revenue / passenger / fare / cost data in OpenFlights → no direct profitability modeling in this version.
+
+### Next steps (planned):
+
+- add route distance / regional bucketing
+- enhance segmentation (percentile thresholds documented + sensitivity checks)
+- incorporate external commercial/operational datasets for profitability and seasonality extensions
+
+---
+
+## Author
+
+Di Lu — BCom (Information Systems & Business Analytics), University of Auckland  
 Portfolio project showcasing end-to-end analytics capability (Python → SQL → BI).
