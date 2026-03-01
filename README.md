@@ -110,6 +110,8 @@ This produces an analysis-ready airline-level output:
 ---
 
 ## Power BI Dashboard (What you see in the screenshots)
+The near-linear relationship between Top-10 route share and HHI suggests that network concentration is structurally embedded in airline route portfolios rather than driven by random dispersion.
+
 
 Using the exported airline-level table, I built:
 
@@ -125,6 +127,11 @@ Columns shown:
 ### B) Ranking chart (Top-10 Route Share by airline, colored by label)
 Helps compare how strongly each airline depends on its top routes.
 
+<p align="center">
+  <img src="Report/02_top10_route_share_by_airline.png" width="800"/>
+</p>
+
+
 ### C) Flagship scatter (Top-10 Share × HHI) + bubble size + label colors
 - X: `top10_share_pct`
 - Y: `hhi`
@@ -133,10 +140,19 @@ Helps compare how strongly each airline depends on its top routes.
 - **Slicer**: filter by concentration label
 - **Reference lines**: quadrant-style split (visual storytelling)
 
+<p align="center">
+  <img src="Report/03_hhi_vs_top10_share_scatter.png" width="800"/>
+</p>
+
+
 This is the primary “insight” visual: it shows how route dominance relates to overall network concentration.
 
 ### D) Distribution chart (Count of airlines by concentration_label)
 A simple summary of how the sample is distributed across the three segments.
+
+<p align="center">
+  <img src="Report/04_airline_concentration_distribution.png" width="700"/>
+</p>
 
 ---
 
