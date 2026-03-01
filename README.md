@@ -117,6 +117,11 @@ Using the exported airline-level table, I built:
 Columns shown:
 - `airline`, `concentration_label`, `hhi`, `top10_share_pct`, `total_route_count`
 
+<p align="center">
+  <img src="Report/01_airline_network_metrics_overview.png" width="800"/>
+</p>
+
+
 ### B) Ranking chart (Top-10 Route Share by airline, colored by label)
 Helps compare how strongly each airline depends on its top routes.
 
@@ -135,7 +140,7 @@ A simple summary of how the sample is distributed across the three segments.
 
 ---
 
-## 🧠 Metric explanation (HR-friendly but technically correct)
+## Metric explanation (HR-friendly but technically correct)
 
 ### Top-10 Route Share
 “How dependent is an airline on its most frequent 10 routes?”
@@ -170,9 +175,9 @@ Airline-Analytics-Project/
 ├── Report/
 │   └── (screenshots)                # optional: store the images you shared
 └── README.md
+```
 
 
-⸻
 
 # How to reproduce (end-to-end)
 
