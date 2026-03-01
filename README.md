@@ -1,118 +1,249 @@
-# Airline-Analytics-Project
-End-to-end airline data analytics project using SQL, Python and Power BI.  Exploring airline route performance, seasonality impact and route optimization insights.
+# Airline-Analytics-Project — Airline Network Concentration Analytics  
+**SQL • Python • Power BI | End-to-end analytics pipeline + portfolio-ready dashboard**
 
-## Project Overview
-This project explores how airline route networks are structured — 
-specifically, whether airlines tend to concentrate traffic on a small number of core routes 
-or distribute capacity more evenly across their networks.
+This project builds an analysis-ready airline route dataset from OpenFlights and answers a strategy-focused question:
 
-Using OpenFlights route data, the analysis applies network concentration metrics 
-(such as Top-N route share and HHI) to compare structural differences across airlines.
-The project demonstrates how simplified concentration proxies can effectively capture 
-complex network behaviors.
-
-# ✈️ Airline Network Analytics (SQL • Python • Power BI)
-
-**End-to-end analytics project** that builds an analysis-ready airline route dataset and delivers **network strategy insights** through **SQL-based metrics** and an **interactive Power BI dashboard**.
-
-> Core question: **Are airline route networks concentrated on a few routes, or distributed across many?**  
-> Key metrics: **Top-10 route share** + **HHI (Herfindahl–Hirschman Index)**
+> **Are airline route networks concentrated on a small number of routes, or distributed across many routes?**  
+> Using two complementary metrics: **Top-10 Route Share** and **HHI (Herfindahl–Hirschman Index)**.
 
 ---
 
-## 🔥 Why this project matters (Business Value)
+## Why this matters (Business & Strategy Value)
 
-Airline network structure is a strategic asset. Understanding **route portfolio concentration** helps decision-makers:
+Airline route networks are strategic assets. Understanding network **concentration vs. distribution** helps decision-makers:
 
-- **Network planning**: hub-and-spoke vs. distributed strategies; expansion priorities  
-- **Risk management**: dependence on “trunk” routes and single points of failure  
-- **Resilience & competition**: monopoly exposure on certain airport-route segments  
-- **Operational complexity**: fleet/equipment diversity as a proxy for operational variety
+- **Network planning**: hub-and-spoke vs. distributed strategy, route portfolio balance  
+- **Risk & resilience**: dependence on a few trunk routes / key airports (single-point risk)  
+- **Competitive exposure**: identify monopoly-like situations where a route has only one airline  
+- **Operational complexity (proxy)**: equipment diversity as a coarse indicator of fleet variety
 
-This project is designed to demonstrate not only dashboarding, but **analytical thinking + metric design + reproducible workflow**.
-
----
-
-## 🧠 What I built (Deliverables)
-
-### 1) Analysis-ready dataset (Python)
-- Cleaned OpenFlights raw `.dat` files (airports / airlines / routes)
-- Standardized schema & missing values (`\N` → `NA`)
-- Resolved join-key type issues (string casting for airport IDs)
-- Enriched routes by joining:
-  - source airport metadata (IATA, country, lat/long)
-  - destination airport metadata (IATA, country, lat/long)
-- Output:
-  - `data/processed/routes_enriched.csv` (imported into SQLite for analysis)
-
-### 2) Deep SQL analytics (SQLite)
-Built reusable views and advanced metrics to answer network questions:
-- **Airport Hub Index** (departures, unique destinations, frequency intensity)
-- **Strong bidirectional connections** (top airport pairs)
-- **International exposure** (% cross-country routes)
-- **Monopoly exposure risk** (routes served by only one airline)
-- **Airline breadth vs. focus** (origins/destinations/country coverage)
-- **Equipment diversity proxy** (fleet complexity indicator)
-
-**Flagship analysis: Network concentration**
-- Route frequency table per airline-route
-- **Top-10 route share** (% of traffic represented by the 10 most frequent routes)
-- **HHI** from route-level shares: `HHI = Σ share²`
-- Segmentation into three groups (distributed vs. moderate vs. high concentration)
-  - Implemented using **relative thresholds / percentile logic** (more appropriate for network HHI scale)
-
-Outputs exported for BI:
-- `data/processed/airline_network_concentration.csv`
-
-### 3) Power BI interactive dashboard
-Key visuals built:
-- **Bar**: Count of airlines by concentration label  
-- **Table**: airline-level metrics (`top10_share_pct`, `hhi`, `total_route_count`, label)  
-- **Scatter (core)**: `Top-10 share` (X) × `HHI` (Y), bubble size = `route count`, color = `concentration_label`  
-- **Slicer**: filter by concentration label for interactive exploration  
-- (Optional) reference lines/quadrant logic for “network structure” storytelling
+**Important scope note (honest & professional):**  
+OpenFlights does not include revenue, fares, passenger demand, or costs. This project therefore focuses on **network structure analytics**, which is a strong foundation for future profitability/seasonality extensions once commercial data is available.
 
 ---
 
-## 📊 Key Metrics (Explainable to HR & stakeholders)
+## What I built (Deliverables)
+
+### 1) Data cleaning + enrichment pipeline (Python / Pandas)
+From raw OpenFlights `.dat` files:
+- `airports.dat`, `airlines.dat`, `routes.dat`
+
+I implemented:
+- schema assignment (column naming based on OpenFlights definitions)
+- missing value handling (`\N` → `pd.NA`)
+- type alignment for joins (**airport_id**, **source_airport_id**, **destination_airport_id** cast to string)
+- enrichment joins:
+  - routes + **source airport** metadata (IATA, city/country, lat/long)
+  - routes + **destination airport** metadata (IATA, city/country, lat/long)
+
+**Outputs (generated by `Python/load_openflights_data.py`)**
+- `data/processed/airports_clean.csv`
+- `data/processed/airlines_clean.csv`
+- `data/processed/routes_clean.csv`
+- `data/processed/routes_enriched.csv`
+
+> Script: `Python/load_openflights_data.py`
+
+---
+
+### 2) Exploratory SQL (SQLite) — quick sanity checks + basic network stats
+File: `basic_analysis.sql`
+
+Includes:
+- top routes by frequency (source_iata → destination_iata)
+- data quality checks (missing IATA)
+- busiest departure airports (top 20)
+- busiest arrival airports (top 20)
+
+These queries validate that the dataset is usable before advanced metrics.
+
+---
+
+### 3) Advanced SQL (SQLite) — reusable views + deeper network analytics
+File: `advanced_analysis.sql`
+
+#### 3.1 Base clean view (analysis-safe)
+Creates a filtered view to avoid invalid endpoints:
+- `v_routes`: keeps only rows where `source_iata` and `destination_iata` are non-null/non-empty
+
+#### 3.2 Network structure analytics (airport + airline)
+Implemented analyses include:
+- **Airport Hub Index**  
+  departures, unique destinations, avg frequency per destination (for airports with >=200 departures)
+- **Bidirectional strong connections**  
+  strongest airport pairs (treating A–B and B–A as one pair)
+- **International exposure index**  
+  international share % by airport (cross-country routes)
+- **Single-point / monopoly exposure**  
+  airports where many routes are served by only one airline
+- **Airline network breadth vs focus**  
+  route count + origin/destination airport and country coverage (airlines with >=200 routes)
+- **Equipment diversity proxy**  
+  number of distinct `equipment` values by airline (coarse proxy for fleet variety)
+
+#### 3.3 Flagship metric engineering: Top-10 Share + HHI + segmentation
+To answer the main question, I built:
+
+- `v_route_frequency`: per-airline per-route frequency (`route_count`)
+- `v_airline_total_routes`: total route frequency per airline (`total_route_count`)
+- **Top-10 Route Share**:
+  - rank each airline’s routes by `route_count`
+  - `top10_share_pct = top10_route_count / total_route_count`
+- **HHI**:
+  - route share = `route_count / total_route_count`
+  - `HHI = Σ(share²)` (computed per airline)
+
+**Segmentation approach used in code (consistent with your final SQL):**  
+Because route-network HHI values are structurally small, the project uses **percentile-based segmentation** (via `PERCENT_RANK()`), rather than borrowing classic market HHI thresholds:
+
+- top 20% HHI → **Highly concentrated**
+- 50–80% → **Moderately concentrated**
+- bottom 50% → **Distributed**
+
+This produces an analysis-ready airline-level output:
+- `airline`
+- `total_route_count`
+- `top10_share_pct`
+- `hhi`
+- `concentration_label`
+
+---
+
+## Power BI Dashboard (What you see in the screenshots)
+
+Using the exported airline-level table, I built:
+
+### A) Airline metrics table (audit-friendly)
+Columns shown:
+- `airline`, `concentration_label`, `hhi`, `top10_share_pct`, `total_route_count`
+
+### B) Ranking chart (Top-10 Route Share by airline, colored by label)
+Helps compare how strongly each airline depends on its top routes.
+
+### C) Flagship scatter (Top-10 Share × HHI) + bubble size + label colors
+- X: `top10_share_pct`
+- Y: `hhi`
+- Bubble size: `total_route_count` (network scale)
+- Color: `concentration_label`
+- **Slicer**: filter by concentration label
+- **Reference lines**: quadrant-style split (visual storytelling)
+
+This is the primary “insight” visual: it shows how route dominance relates to overall network concentration.
+
+### D) Distribution chart (Count of airlines by concentration_label)
+A simple summary of how the sample is distributed across the three segments.
+
+---
+
+## 🧠 Metric explanation (HR-friendly but technically correct)
 
 ### Top-10 Route Share
-Measures how dependent an airline is on its **top 10 most frequent routes**.
-
-- Higher → network depends heavily on a small set of routes  
-- Lower → traffic is spread more evenly
+“How dependent is an airline on its most frequent 10 routes?”
+- Higher value → heavier reliance on a few core routes
+- Lower value → more diversified route portfolio
 
 ### HHI (Herfindahl–Hirschman Index)
-A standard concentration metric (often used in economics / competition analysis), adapted here for **route portfolio concentration**.
-
-- HHI close to 0 → highly distributed route portfolio  
-- Higher HHI → more concentrated portfolio
-
-> Note: For airline route networks, HHI values are naturally small (many routes).  
-> Therefore, **relative segmentation (percentile/within-sample thresholds)** is more meaningful than classic market HHI cutoffs.
+A standard concentration metric adapted here to route portfolios:
+- Higher HHI → more concentrated network
+- Lower HHI → more distributed network
 
 ---
 
-## 🗂 Repository Structure
-
+## Project structure (matches your repo naming)
 ```text
 Airline-Analytics-Project/
 ├── data/
-│   ├── raw/                         # OpenFlights raw files (.dat)
-│   └── processed/                   # cleaned & analysis-ready outputs
+│   ├── raw/                         # airports.dat, airlines.dat, routes.dat (OpenFlights)
+│   └── processed/                   # generated outputs
 │       ├── airports_clean.csv
 │       ├── airlines_clean.csv
 │       ├── routes_clean.csv
 │       ├── routes_enriched.csv
-│       └── airline_network_concentration.csv
+│       └── airline_network_concentration.csv   # exported from SQL / used in Power BI
 ├── Python/
-│   └── load_openflights_data.py     # data cleaning + enrichment pipeline (Pandas)
+│   └── load_openflights_data.py
 ├── sql/
-│   ├── basic_analysis.sql           # hub / intl / monopoly / breadth / equipment proxy
-│   └── advanced_analysis.sql        # Top10 share + HHI + concentration segmentation
+│   ├── basic_analysis.sql
+│   └── advanced_analysis.sql
 ├── powerbi/
-│   └── (dashboard.pbix)             # optional: local PBIX
+│   └── (dashboard.pbix)             # optional (local)
 ├── Report/
-│   └── (screenshots / write-up)     # optional: exported visuals & narrative
-├── README.md
-└── .gitignore
+│   └── (screenshots)                # optional: store the images you shared
+└── README.md
+
+
+⸻
+
+How to reproduce (end-to-end)
+
+1) Install dependencies
+
+python -m venv .venv
+source .venv/bin/activate   # macOS/Linux
+pip install pandas
+
+2) Place raw data
+
+Download OpenFlights .dat files and put them here:
+	•	data/raw/airports.dat
+	•	data/raw/airlines.dat
+	•	data/raw/routes.dat
+
+Note: In your current script, the input paths are absolute (e.g., /Users/.../Downloads/...).
+For portability, you can change them to relative paths like data/raw/airports.dat.
+
+3) Run Python enrichment
+
+python Python/load_openflights_data.py
+
+Outputs will be written to:
+	•	data/processed/routes_enriched.csv (plus cleaned dimension files)
+
+4) Load into SQLite (DB Browser for SQLite)
+	•	Create/open a database (e.g., enriched.db)
+	•	Import data/processed/routes_enriched.csv as table: routes_enriched
+
+5) Run SQL scripts
+
+Execute:
+	•	sql/basic_analysis.sql
+	•	sql/advanced_analysis.sql
+
+6) Export for Power BI
+
+Export the final airline-level result (from the “HHI + Top10 + segmentation” query) as:
+	•	data/processed/airline_network_concentration.csv
+
+7) Power BI
+	•	Load data/processed/airline_network_concentration.csv
+	•	Build:
+	•	Table visual (airline metrics)
+	•	Bar chart (airline count by label)
+	•	Scatter chart (Top10 vs HHI) with size + label legend + slicer
+
+⸻
+
+🛠 Tech stack & skills demonstrated
+	•	Python (pandas): cleaning, schema alignment, missing value handling, enrichment joins, export pipeline
+	•	SQL (SQLite): views, CTEs, window functions, ranking, metric engineering (TopN share, HHI), segmentation
+	•	Power BI: interactive visuals (slicer), scatter storytelling, dashboard-style presentation
+	•	Git/GitHub: iterative development, reproducible artifact organization
+
+⸻
+
+Limitations & next steps
+
+Limitations:
+	•	No revenue / passenger / fare / cost data in OpenFlights → no direct profitability modeling in this version.
+
+Next steps (planned):
+	•	add route distance / regional bucketing
+	•	enhance segmentation (percentile thresholds documented + sensitivity checks)
+	•	incorporate external commercial/operational datasets for profitability and seasonality extensions
+
+⸻
+
+Author
+
+Di Lu — BCom (Information Systems & Business Analytics), University of Auckland
+Portfolio project showcasing end-to-end analytics capability (Python → SQL → BI).
