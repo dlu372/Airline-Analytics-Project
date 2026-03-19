@@ -286,7 +286,7 @@ BCom (Information Systems & Business Analytics), University of Auckland
 
 ### 📫 Connect with Me
 
+- 📮 Email: dilu.connect@gmail.com
 - 🔗 LinkedIn: https://www.linkedin.com/in/di-lu-3572912b5  
-- 💻 GitHub: https://github.com/dlu372  
 
 ---
