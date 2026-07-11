@@ -10,3 +10,12 @@ __pycache__/
 *.db
 *.db-journal
 *.sqbpro
+data/analytics/*.sqlite
+
+# Reproducible generated outputs
+data/processed/*.csv
+data/analytics/airline_origin_detail.csv
+data/analytics/route_carrier_diversity.csv
+
+# Local legacy recovery artifacts
+legacy/

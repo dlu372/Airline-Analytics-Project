@@ -1,0 +1,94 @@
+{
+  "analysis_unit": "directed airline-origin-destination route presence",
+  "analytics_output_shapes": {
+    "airline_geographic_reach": {
+      "columns": 20,
+      "rows": 564
+    },
+    "airline_hub_dependence": {
+      "columns": 15,
+      "rows": 564
+    },
+    "airline_network_summary": {
+      "columns": 19,
+      "rows": 564
+    },
+    "airline_origin_detail": {
+      "columns": 15,
+      "rows": 15791
+    },
+    "airport_connectivity": {
+      "columns": 15,
+      "rows": 2979
+    },
+    "codeshare_sensitivity": {
+      "columns": 28,
+      "rows": 566
+    },
+    "dim_airline": {
+      "columns": 14,
+      "rows": 566
+    },
+    "route_carrier_diversity": {
+      "columns": 18,
+      "rows": 33854
+    }
+  },
+  "dataset": "OpenFlights 2014 historical route snapshot",
+  "primary_network": "non-codeshare route presences (operating-network proxy)",
+  "quality_metrics": {
+    "airline_id_match_rate": 0.992920798663967,
+    "airline_id_matched_rows": 67184,
+    "airline_id_unique": true,
+    "airline_id_unmatched_rows": 479,
+    "airport_5613_geographic_eligible_rows": 0,
+    "airport_id_unique": true,
+    "all_listed_valid_directed_route_presences": 66770,
+    "canonical_geographic_route_rows": 66934,
+    "codeshare_count": 14597,
+    "codeshare_share": 0.21573090167447498,
+    "distance_valid_non_codeshare_route_presences": 52163,
+    "duplicate_directed_route_key_count": 0,
+    "endpoint_resolution_status_counts": {
+      "destination": {
+        "conflicting": 454,
+        "id_code_consistent": 66632,
+        "id_only": 89,
+        "resolved_by_unique_code": 161,
+        "unresolved": 327
+      },
+      "source": {
+        "conflicting": 450,
+        "id_code_consistent": 66642,
+        "id_only": 88,
+        "resolved_by_unique_code": 165,
+        "unresolved": 318
+      }
+    },
+    "endpoint_strategy_route_counts": {
+      "airport_id_first": 66771,
+      "canonical_unique_code_first": 66934,
+      "strict_consensus": 65723,
+      "unique_code_first": 66934
+    },
+    "enriched_route_row_count": 67663,
+    "excluded_geographic_route_rows": 729,
+    "geographic_excluded_non_codeshare_route_presences": 133,
+    "invalid_latitude_count": 0,
+    "invalid_longitude_count": 0,
+    "missing_destination_airport_match_count": 488,
+    "missing_destination_coordinates_count": 488,
+    "missing_destination_iata_count": 666,
+    "missing_source_airport_match_count": 483,
+    "missing_source_coordinates_count": 483,
+    "missing_source_iata_count": 659,
+    "non_codeshare_valid_directed_route_presences": 52296,
+    "raw_route_row_count": 67663,
+    "source_equals_destination_count": 1
+  },
+  "raw_checksums": {
+    "airlines.dat": "39be1a432e8b04ebc12860c29281c974a9cb52169c82b2456a835d66ab1548a1",
+    "airports.dat": "9387cdb38df5bd664da823f8ccb69fdd9b33a1888f5b7cca09c34a3cd9ff59f9",
+    "routes.dat": "bd373706238134f619c624c606dccc74c05c2582a977c489c81de501735f2390"
+  }
+}
