@@ -2,17 +2,17 @@ import pandas as pd
 
 # Load OpenFlights datasets
 airports = pd.read_csv(
-    "/Users/luxun/Downloads/Airline-Analytics-Project/data/raw/airports.dat",
+    "data/raw/airports.dat",
     header=None
 )
 
 airlines = pd.read_csv(
-    "/Users/luxun/Downloads/Airline-Analytics-Project/data/raw/airlines.dat",
+    "data/raw/airlines.dat",
     header=None
 )
 
 routes = pd.read_csv(
-    "/Users/luxun/Downloads/Airline-Analytics-Project/data/raw/routes.dat",
+    "data/raw/routes.dat",
     header=None
 )
 
