@@ -1,7 +1,26 @@
 # macOS
 .DS_Store
 
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Observable Framework
+node_modules/
+dist/
+dashboard/.observablehq/
+
 # SQLite
 *.db
 *.db-journal
 *.sqbpro
+data/analytics/*.sqlite
+
+# Reproducible generated outputs
+data/processed/*.csv
+data/analytics/airline_origin_detail.csv
+data/analytics/route_carrier_diversity.csv
+
+# Local legacy recovery artifacts
+legacy/
