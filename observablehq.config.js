@@ -3,6 +3,7 @@ export default {
   root: "dashboard",
   output: "dist",
   style: "style.css",
+  head: '<link rel="icon" href="./favicon.svg" type="image/svg+xml">',
   sidebar: false,
   pager: false,
   header: false,
