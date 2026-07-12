@@ -6,6 +6,11 @@
 __pycache__/
 *.pyc
 
+# Observable Framework
+node_modules/
+dist/
+dashboard/.observablehq/
+
 # SQLite
 *.db
 *.db-journal
